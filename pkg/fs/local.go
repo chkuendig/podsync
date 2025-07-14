@@ -13,7 +13,8 @@ import (
 
 // LocalConfig is the storage configuration for local file system
 type LocalConfig struct {
-	DataDir string `toml:"data_dir"`
+	DataDir      string `toml:"data_dir"`
+	WebUIEnabled bool   `toml:"webui"`
 }
 
 // Local implements local file storage
@@ -26,9 +27,9 @@ func NewLocal(rootDir string) (*Local, error) {
 }
 
 func (l *Local) Open(name string) (http.File, error) {
-	if (name == "/index.html") {
+	if name == "/index.html" {
 		// allow users to override the index.html by placing one in the data dir.
-		if  _, err := os.Stat(filepath.Join(l.rootDir, name)); errors.Is(err, os.ErrNotExist) { 
+		if _, err := os.Stat(filepath.Join(l.rootDir, name)); errors.Is(err, os.ErrNotExist) {
 			return os.Open("./html/index.html")
 		}
 	}
